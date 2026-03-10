@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Intelligent Presentation Layer — Westfield Capital</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap');
+
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #162236;
+    --navy-light: #1E3050;
+    --teal: #1A9E8F;
+    --teal-light: #22C4B2;
+    --teal-dim: rgba(26,158,143,0.15);
+    --gold: #C9A84C;
+    --gold-dim: rgba(201,168,76,0.12);
+    --white: #F4F6F8;
+    --white-dim: rgba(244,246,248,0.55);
+    --white-faint: rgba(244,246,248,0.08);
+    --red: #E05252;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 10vw;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(26,158,143,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--teal-light);
+  }
+
+  .hero-subtitle {
+    margin-top: 32px;
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--white-dim);
+    max-width: 520px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-meta {
+    margin-top: 56px;
+    display: flex;
+    gap: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  .meta-value {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--white);
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 10vw;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--teal);
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+  }
+
+  .section-title em { font-style: italic; color: var(--teal-light); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(26,158,143,0.3), transparent);
+    margin: 0 10vw;
+    width: 80vw;
+  }
+
+  /* ── COST GRID ── */
+  .cost-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2px;
+    margin-top: 48px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .cost-card {
+    background: var(--navy-mid);
+    padding: 36px 32px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  .cost-card:hover { background: var(--navy-light); }
+
+  .cost-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--red);
+    opacity: 0.7;
+  }
+
+  .cost-card.teal::before { background: var(--teal); }
+
+  .cost-number {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .cost-card.teal .cost-number { color: var(--teal-light); }
+
+  .cost-label {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .cost-desc {
+    font-size: 12px;
+    color: var(--white-dim);
+    line-height: 1.6;
+  }
+
+  /* ── BEFORE / AFTER ── */
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  @media (max-width: 768px) { .ba-grid { grid-template-columns: 1fr; } }
+
+  .ba-panel {
+    padding: 48px 40px;
+    background: var(--navy-mid);
+  }
+
+  .ba-panel.after { background: var(--navy-light); border-left: 3px solid var(--teal); }
+  .ba-panel.before { border-left: 3px solid var(--red); opacity: 0.85; }
+
+  .ba-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .ba-panel.before .ba-tag { color: var(--red); }
+  .ba-panel.after .ba-tag { color: var(--teal); }
+
+  .ba-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ba-list li {
+    font-size: 14px;
+    color: var(--white-dim);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .ba-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    opacity: 0.6;
+  }
+
+  .ba-panel.after .ba-list li::before {
+    content: '→';
+    color: var(--teal);
+    opacity: 1;
+  }
+
+  /* ── ARCHITECTURE ── */
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 48px;
+    overflow-x: auto;
+    padding-bottom: 16px;
+  }
+
+  .arch-node {
+    flex: 1;
+    min-width: 140px;
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 28px 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .arch-node-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .arch-node-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .arch-node-desc {
+    font-size: 11px;
+    color: var(--white-dim);
+    line-height: 1.5;
+  }
+
+  .arch-arrow {
+    color: var(--teal);
+    opacity: 0.5;
+    font-size: 20px;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .arch-node.highlight {
+    background: var(--teal-dim);
+    border-color: rgba(26,158,143,0.4);
+  }
+
+  /* ── USE CASES ── */
+  .use-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .use-card {
+    background: var(--navy-mid);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  .use-card:hover { background: var(--navy-light); }
+
+  .use-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at bottom right, var(--teal-dim), transparent);
+  }
+
+  .use-number {
+    font-family: var(--serif);
+    font-size: 60px;
+    font-weight: 300;
+    color: rgba(26,158,143,0.15);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .use-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .use-desc {
+    font-size: 13px;
+    color: var(--white-dim);
+    line-height: 1.7;
+  }
+
+  .use-tag {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    border: 1px solid rgba(26,158,143,0.3);
+    padding: 4px 10px;
+  }
+
+  /* ── QUOTE BLOCK ── */
+  .quote-block {
+    background: var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    padding: 40px 48px;
+    margin: 48px 0;
+  }
+
+  .quote-text {
+    font-family: var(--serif);
+    font-size: clamp(22px, 3vw, 32px);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.4;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .quote-source {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── PHASING ── */
+  .phase-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .phase-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    background: var(--navy-mid);
+    overflow: hidden;
+  }
+
+  .phase-num {
+    background: var(--teal-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--teal);
+    border-right: 1px solid rgba(26,158,143,0.2);
+  }
+
+  .phase-content {
+    padding: 28px 32px;
+  }
+
+  .phase-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .phase-desc {
+    font-size: 13px;
+    color: var(--white-dim);
+    line-height: 1.6;
+  }
+
+  .phase-sprint {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 10vw;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: var(--white);
+  }
+
+  .footer-logo span { color: var(--teal); }
+
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--white-dim);
+    text-transform: uppercase;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── SCROLL PROGRESS ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--teal);
+    z-index: 100;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px var(--teal);
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <p class="eyebrow">Westfield Capital Management · Strategic Initiative</p>
+  <h1 class="hero-title">The <em>Intelligent</em><br>Presentation Layer</h1>
+  <p class="hero-subtitle">
+    Eliminating the operational tax of static document production — 
+    and replacing it with a live, AI-generated output layer powered by 
+    the Claude+MCP infrastructure already in flight.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Storage Impact</span>
+      <span class="meta-value">50%+</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Output Types</span>
+      <span class="meta-value">3</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Fits Sprint</span>
+      <span class="meta-value">Phase 4</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── THE COST ── -->
+<section>
+  <p class="section-label fade-in">01 · The Problem</p>
+  <h2 class="section-title fade-in">A <em>hidden tax</em> on every team,<br>every quarter</h2>
+  <p class="fade-in" style="color: var(--white-dim); max-width: 580px; font-size: 15px; margin-bottom: 8px;">
+    More than half of Westfield's storage is static presentation files — 
+    snapshots of data that changes daily, rebuilt from scratch for every client, 
+    prospect, and internal meeting.
+  </p>
+
+  <div class="cost-grid fade-in">
+    <div class="cost-card">
+      <div class="cost-number">50%+</div>
+      <div class="cost-label">Storage consumed by static decks</div>
+      <div class="cost-desc">PowerPoint, PDF, and Word files that are outdated within days of creation</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-number">∞</div>
+      <div class="cost-label">Version copies per engagement</div>
+      <div class="cost-desc">"Q4_ClientX_final_v3_REVISED_USE_THIS_ONE" — multiplied across every relationship</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-number">Hrs</div>
+      <div class="cost-label">Analyst time per deck</div>
+      <div class="cost-desc">Highly skilled people doing formatting, copy-paste, and layout work that generates no alpha</div>
+    </div>
+    <div class="cost-card teal">
+      <div class="cost-number">0</div>
+      <div class="cost-label">New infrastructure required</div>
+      <div class="cost-desc">The Claude+MCP sprint already being built is the engine. This is just a new output format.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── QUOTE ── -->
+<section style="padding-top: 60px; padding-bottom: 60px;">
+  <div class="quote-block fade-in">
+    <p class="quote-text">"WIP 2.0 feels legacy before it launches. The mandate changed while the project was in flight."</p>
+    <p class="quote-source">Dee Silveira · CTO, Westfield Capital Management</p>
+  </div>
+  <p class="fade-in" style="color: var(--white-dim); font-size: 15px; max-width: 640px; line-height: 1.8;">
+    The same dynamic applies to every static deck produced today. 
+    By the time it's formatted, reviewed, and sent — the data has moved. 
+    The intelligence layer doesn't just improve the workflow. 
+    It makes the old workflow structurally obsolete.
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── BEFORE / AFTER ── -->
+<section>
+  <p class="section-label fade-in">02 · The Shift</p>
+  <h2 class="section-title fade-in">Reporting vs. <em>Reasoning</em></h2>
+
+  <div class="ba-grid fade-in">
+    <div class="ba-panel before">
+      <p class="ba-tag">Today — Static Production</p>
+      <ul class="ba-list">
+        <li>Analyst pulls data from Snowflake/Eze manually</li>
+        <li>Formats into PowerPoint template</li>
+        <li>Reviews, revises, exports to PDF</li>
+        <li>Emailed as attachment — immediately static</li>
+        <li>Stored forever as another version file</li>
+        <li>Repeated in full for every client variation</li>
+        <li>No personalization at scale</li>
+        <li>Zero interactivity for the reader</li>
+      </ul>
+    </div>
+    <div class="ba-panel after">
+      <p class="ba-tag">Future — Intelligent Generation</p>
+      <ul class="ba-list">
+        <li>Claude queries Snowflake live via MCP</li>
+        <li>Generates HTML presentation from prompt + template</li>
+        <li>Personalized per client at zero marginal cost</li>
+        <li>Delivered as a link — always regenerable</li>
+        <li>Store the prompt + template, not 500 PDF copies</li>
+        <li>Interactive charts, filters, drill-downs included</li>
+        <li>Analyst reviews output, not production process</li>
+        <li>Regenerate in seconds when data updates</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── ARCHITECTURE ── -->
+<section>
+  <p class="section-label fade-in">03 · How It Works</p>
+  <h2 class="section-title fade-in">Already built.<br><em>New output format.</em></h2>
+  <p class="fade-in" style="color: var(--white-dim); font-size: 15px; max-width: 580px; margin-bottom: 8px;">
+    This is not a new project. It is a natural extension of the Claude+MCP architecture — 
+    adding an HTML presentation output to an engine already being built.
+  </p>
+
+  <div class="arch-flow fade-in">
+    <div class="arch-node">
+      <span class="arch-node-icon">📊</span>
+      <div class="arch-node-name">Eze / APX</div>
+      <div class="arch-node-desc">Portfolio & transaction data</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node">
+      <span class="arch-node-icon">❄️</span>
+      <div class="arch-node-name">Snowflake</div>
+      <div class="arch-node-desc">Unified data platform</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node">
+      <span class="arch-node-icon">🔒</span>
+      <div class="arch-node-name">Airia MCP</div>
+      <div class="arch-node-desc">Governed AI access layer</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node highlight">
+      <span class="arch-node-icon">🤖</span>
+      <div class="arch-node-name">Claude Agent</div>
+      <div class="arch-node-desc">Reasoning + generation</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node highlight">
+      <span class="arch-node-icon">🌐</span>
+      <div class="arch-node-name">HTML Output</div>
+      <div class="arch-node-desc">Live, interactive, branded presentation</div>
+    </div>
+  </div>
+
+  <p class="fade-in" style="margin-top: 32px; font-family: var(--mono); font-size: 11px; color: var(--teal); letter-spacing: 0.12em;">
+    ↑ Only the last node is new. Everything else is the Q2 sprint.
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── USE CASES ── -->
+<section>
+  <p class="section-label fade-in">04 · Use Cases</p>
+  <h2 class="section-title fade-in">Where this replaces<br><em>static production</em> first</h2>
+
+  <div class="use-grid fade-in">
+    <div class="use-card">
+      <div class="use-number">01</div>
+      <div class="use-title">Client Portfolio Reviews</div>
+      <div class="use-desc">Quarterly reviews generated per client from live Snowflake data. Personalized attribution, commentary, and positioning — in seconds.</div>
+      <span class="use-tag">High frequency · High variation</span>
+    </div>
+    <div class="use-card">
+      <div class="use-number">02</div>
+      <div class="use-title">Prospect Materials</div>
+      <div class="use-desc">Pitch decks tailored to prospect type, AUM range, and strategy interest. Same template, different intelligence — zero manual effort per variation.</div>
+      <span class="use-tag">Sales velocity driver</span>
+    </div>
+    <div class="use-card">
+      <div class="use-number">03</div>
+      <div class="use-title">Internal Risk & Performance</div>
+      <div class="use-desc">Weekly PM and risk committee materials generated automatically. Leadership reads reasoning, not formatting artifacts.</div>
+      <span class="use-tag">Weekly cadence · Immediate win</span>
+    </div>
+    <div class="use-card">
+      <div class="use-number">04</div>
+      <div class="use-title">Board & IC Packages</div>
+      <div class="use-desc">High-stakes materials assembled from structured data. Claude drafts; humans review and approve. Governance preserved, production time slashed.</div>
+      <span class="use-tag">Highest value output</span>
+    </div>
+  </div>
+
+  <div class="quote-block fade-in" style="margin-top: 48px; border-color: rgba(26,158,143,0.4); background: var(--teal-dim);">
+    <p class="quote-text" style="font-size: clamp(18px, 2.5vw, 26px); color: var(--white-dim);">
+      PDF and PPTX remain for regulatory filings, board signatures, and archival. 
+      Everything else becomes a <strong style="color: var(--white); font-style: normal;">prompt and a template.</strong>
+    </p>
+    <p class="quote-source" style="color: var(--teal);">Governing Principle · Format Decisions</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── PHASING ── -->
+<section>
+  <p class="section-label fade-in">05 · Implementation Path</p>
+  <h2 class="section-title fade-in">Bolt-on to the<br><em>existing sprint</em></h2>
+
+  <div class="phase-list fade-in">
+    <div class="phase-item">
+      <div class="phase-num">1</div>
+      <div class="phase-content">
+        <div class="phase-title">Template Library</div>
+        <div class="phase-desc">Define 3–5 canonical HTML presentation templates (client review, prospect pitch, internal report, IC package). Establish Westfield brand standards in CSS. Non-technical staff never touch these.</div>
+        <div class="phase-sprint">Parallel to Phase 2 Engineering Sprint</div>
+      </div>
+    </div>
+    <div class="phase-item">
+      <div class="phase-num">2</div>
+      <div class="phase-content">
+        <div class="phase-title">Pilot — Internal Weekly Report</div>
+        <div class="phase-desc">Start with lowest-stakes, highest-frequency output: internal performance summary. Prove generation quality and time savings before client-facing use.</div>
+        <div class="phase-sprint">Phase 3 Resource Sprint · Validation Gate</div>
+      </div>
+    </div>
+    <div class="phase-item">
+      <div class="phase-num">3</div>
+      <div class="phase-content">
+        <div class="phase-title">Delivery Infrastructure</div>
+        <div class="phase-desc">Determine delivery method per output type: email attachment (HTML file), shared drive link, intranet URL, or PDF export via browser print. Align with compliance on archival requirements.</div>
+        <div class="phase-sprint">Phase 3 · Compliance & IT Alignment</div>
+      </div>
+    </div>
+    <div class="phase-item">
+      <div class="phase-num">4</div>
+      <div class="phase-content">
+        <div class="phase-title">Client-Facing Rollout</div>
+        <div class="phase-desc">Expand to quarterly client reviews and prospect materials. Measure analyst time saved, storage delta, and qualitative feedback on output quality vs. legacy decks.</div>
+        <div class="phase-sprint">Phase 4 Connect Sprint · Q3 Milestone</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CLOSE ── -->
+<section style="padding-bottom: 80px;">
+  <p class="section-label fade-in">06 · The Ask</p>
+  <h2 class="section-title fade-in">Not a new project.<br>A <em>new output format</em><br>for work already approved.</h2>
+  <p class="fade-in" style="color: var(--white-dim); font-size: 16px; max-width: 580px; line-height: 1.9; margin-top: 24px;">
+    The Claude+MCP sprint is already the firm's #1 priority. 
+    This initiative asks only that we define HTML as a first-class output format 
+    alongside the analyst agent work — capturing the presentation production 
+    savings as a measurable, visible win within the same 90-day window.
+  </p>
+  <div class="cost-grid fade-in" style="margin-top: 48px; grid-template-columns: repeat(3, 1fr);">
+    <div class="cost-card teal">
+      <div class="cost-number" style="font-size: 36px;">Zero</div>
+      <div class="cost-label">New infrastructure needed</div>
+      <div class="cost-desc">Rides the Claude+MCP engine already approved and in sprint</div>
+    </div>
+    <div class="cost-card teal">
+      <div class="cost-number" style="font-size: 36px;">50%+</div>
+      <div class="cost-label">Storage problem addressed</div>
+      <div class="cost-desc">Templates replace file proliferation as the new storage model</div>
+    </div>
+    <div class="cost-card teal">
+      <div class="cost-number" style="font-size: 36px;">Q3</div>
+      <div class="cost-label">First measurable ROI</div>
+      <div class="cost-desc">Client review cycle savings quantifiable within first full quarter of operation</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Westfield <span>Capital</span> Management</div>
+  <div class="footer-note">Technology Strategy · Claude+MCP Sprint · March 2026</div>
+</footer>
+
+<script>
+  // Scroll progress
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progress').style.width = (scrolled / total * 100) + '%';
+  });
+
+  // Intersection observer for fade-ins
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
