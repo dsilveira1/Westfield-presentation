@@ -513,6 +513,8 @@
   }
 
   .footer-logo span { color: var(--teal); }
+  .footer-logo a, .eyebrow a { color: inherit; text-decoration: none; }
+  .footer-logo a:hover, .eyebrow a:hover { opacity: 0.8; }
 
   .footer-note {
     font-family: var(--mono);
@@ -556,8 +558,8 @@
 <div class="progress-bar" id="progress"></div>
 
 <!-- ── HERO ── -->
-<section class="hero">
-  <p class="eyebrow">Westfield Capital Management · Strategic Initiative</p>
+<section class="hero" id="top">
+  <p class="eyebrow"><a href="#top">Westfield Capital Management</a> · Strategic Initiative</p>
   <h1 class="hero-title">The <em>Intelligent</em><br>Presentation Layer</h1>
   <p class="hero-subtitle">
     Eliminating the operational tax of static document production — 
@@ -835,7 +837,7 @@
 </section>
 
 <footer>
-  <div class="footer-logo">Westfield <span>Capital</span> Management</div>
+  <div class="footer-logo"><a href="#top">Westfield <span>Capital</span> Management</a></div>
   <div class="footer-note">Technology Strategy · Claude+MCP Sprint · March 2026</div>
 </footer>
 
